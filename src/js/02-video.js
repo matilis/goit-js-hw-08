@@ -12,6 +12,16 @@ player.on(
   )
 );
 
+//inny zapis
+
+// player.on(
+//   'timeupdate',
+//   throttle(function (data) {
+//     const time = Object.values(data);
+//     localStorage.setItem('videoplayer-current-time', time[0]);
+//   }, 1000)
+// );
+
 // player.on(
 //   'timeupdate',
 //   throttle(data => {
