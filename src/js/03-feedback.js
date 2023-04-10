@@ -1,37 +1,61 @@
 import throttle from 'lodash.throttle';
 
 const formEl = document.querySelector('.feedback-form');
-console.log(formEl);
+const btnEl = document.querySelector("button[type ='submit']");
+const inputEl = document.querySelector("input[name ='email']");
+const textEl = document.querySelector("textarea[name ='message']");
 
-class InfoState {
-  state = [];
-  add({ email, message }) {
-    this.state.push({
-      email,
-      message,
-    });
-    this.saveState();
-  }
-  // saveState() {
-  //   throttle(() => {
-  //     localStorage.setItem('feedback-form-state', JSON.stringify(this.state));
-  //   }, 500);
-  // }
-  saveState() {
-    localStorage.setItem('feedback-form-state', JSON.stringify(this.state));
-  }
-  loadState() {
-    const stateLoad = localStorage.getItem('feedback-form-state') || '';
-  }
-}
-const infoState = new InfoState();
-formEl.addEventListener('submit', saveInfo);
-function saveInfo(event) {
+const data = {
+  email: '',
+  message: '',
+};
+const saveMessage = event => {
   event.preventDefault();
+  data[event.target.name] = event.target.value;
+  localStorage.setItem('feedback-form-state', JSON.stringify(data));
+};
 
-  const email = event.target.elements.email.value;
-  const message = event.target.elements.message.value;
+const updateOutput = () => {
+  let obj = JSON.parse(localStorage.getItem('feedback-form-state'));
+  if (obj) {
+    inputEl.value = obj.email;
+    textEl.value = obj.message;
+  } else {
+    formEl.reset();
+  }
+};
+const clearData = () => {
+  localStorage.clear();
+};
+updateOutput();
+formEl.addEventListener('input', throttle(saveMessage, 500));
+btnEl.addEventListener('click', clearData);
 
-  infoState.add({ email, message });
-  event.currentTarget.reset();
-}
+// LUB z uzyciem po staremu function
+
+// const data = {
+//   email: '',
+//   message: '',
+// };
+
+// updateOutput();
+// formEl.addEventListener('input', saveMessage);
+// btnEl.addEventListener('click', clearData);
+// function saveMessage(event) {
+//   event.preventDefault();
+//   data[event.target.name] = event.target.value;
+//   localStorage.setItem('feedback-form-state', JSON.stringify(data));
+// }
+
+// function updateOutput() {
+//   let obj = JSON.parse(localStorage.getItem('feedback-form-state'));
+//   if (obj) {
+//     inputEl.value = obj.email;
+//     textEl.value = obj.message;
+//   } else {
+//     formEl.reset();
+//   }
+// }
+// function clearData() {
+//   localStorage.clear();
+// }
